@@ -5,6 +5,7 @@ class ManiuplatorModel:
     def __init__(self, Tp):
         self.Tp = Tp
         self.l1 = 0.5
+
         self.r1 = 0.25
         self.m1 = 1.
         self.l2 = 0.5
