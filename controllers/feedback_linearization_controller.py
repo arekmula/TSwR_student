@@ -5,7 +5,7 @@ from .controller import Controller
 
 class FeedbackLinearizationController(Controller):
     def __init__(self, Tp):
-        self.model = ManiuplatorModel(Tp)
+        self.model = ManiuplatorModel(Tp, 0.1, 0.01)
         self.Kd = np.diag((1, 1)) * [1, -1]
         self.Kp = np.diag((1, 1)) * [1.3, 1.2]
 
@@ -14,10 +14,13 @@ class FeedbackLinearizationController(Controller):
         Please implement the feedback linearization using self.model (which you have to implement also),
         robot state x and desired control v.
         """
+
+        print("x: ", x)
+        print("v: ", _q_d_ddot)
+
         q1, q2, q1_dot, q2_dot = x
 
         q1_d_dot, q2_d_dot = _q_d_ddot
-
 
         # create q** vector from given v
         q_d_ddot = np.array([[q1_d_dot[0]],
