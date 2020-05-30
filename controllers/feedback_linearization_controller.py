@@ -15,9 +15,6 @@ class FeedbackLinearizationController(Controller):
         robot state x and desired control v.
         """
 
-        print("x: ", x)
-        print("v: ", _q_d_ddot)
-
         q1, q2, q1_dot, q2_dot = x
 
         q1_d_dot, q2_d_dot = _q_d_ddot

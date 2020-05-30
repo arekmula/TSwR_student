@@ -19,7 +19,7 @@ class MMAController(Controller):
 
     def choose_model(self, x, u, x_dot):
         # TODO: Implement procedure of choosing the best fitting model from self.models (by setting self.i)
-        e_list = [] # list of errors
+        e_list = []  # list of errors
 
         # for each model calculate xmi_dot, reshape x_dot and calculate error
         for model in self.models:
@@ -36,28 +36,18 @@ class MMAController(Controller):
 
 
     def calculate_control(self, x, q_d_ddot, q_d_dot, q_d):
-        # v = desired_q_ddot
-        # q_dot = x[2:, np.newaxis]
-        # M = self.models[self.i].M(x)
-        # return M @ (v + np.linalg.inv(M) @ self.models[self.i].C(x) @ q_dot)
-
-        # feedback
-        # q_d_ddot = q_d_ddot + np.dot(self.Kd, (q_d_dot - _q_d_dot)) + np.dot(self.Kp, (q_d - _q_d))
-
         # create output vector
         tau = np.zeros((2, 1), float)
 
-        # choose curent working model based on choose model function
-        # curModel = self.models[self.i]
-
-        # calculate tau from equation no 20
-        # M_v = np.dot(curModel.M(x), q_d_ddot)
-        # C_q = np.dot(curModel.C(x), q_d_dot)
-        # tau = M_v + C_q
-
         v = q_d_ddot + self.Kd.dot(x[2:].reshape(-1, 1) - q_d_dot.reshape(-1, 1)) + self.Kp.dot(
             x[:2].reshape(-1, 1) - q_d.reshape(-1, 1))
+
         q_dot = x[2:, np.newaxis]
         M = self.models[self.i].M(x)
+        C = self.models[self.i].C(x)
+        M_v = np.dot(M, v)
+        C_q = np.dot(C, q_dot)
 
-        return M @ (v + np.linalg.inv(M) @ self.models[self.i].C(x) @ q_dot)
+        tau = M_v + C_q
+
+        return tau
