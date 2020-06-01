@@ -17,6 +17,7 @@ class MMAController(Controller):
         self.Kp = np.diag((1, 1)) * [1.3, 1.2]
 
     def choose_model(self, x, u, x_dot):
+
         zeros = np.zeros((2, 2), dtype=np.float32)
         e_list = []
 
