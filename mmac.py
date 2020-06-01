@@ -13,7 +13,7 @@ from trajectory_generators.poly3 import Poly3
 
 """http://www.gipsa-lab.fr/~ioandore.landau/adaptivecontrol/Transparents/Courses/AdaptiveCourse5GRK.pdf"""
 
-Tp = 0.001
+Tp = 0.005
 start = 0
 end = 3
 t = np.linspace(start, end, int((end - start) / Tp))
