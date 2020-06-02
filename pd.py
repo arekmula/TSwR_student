@@ -5,6 +5,7 @@ from scipy.integrate import odeint
 
 from controllers.dummy_controller import DummyController
 from controllers.feedback_linearization_controller import FeedbackLinearizationController
+from controllers.pd_controller import PDDecentralizedController
 from manipulators.planar_2dof import PlanarManipulator2DOF
 from trajectory_generators.constant_torque import ConstantTorque
 from trajectory_generators.sinusonidal import Sinusoidal
@@ -16,19 +17,13 @@ end = 3
 t = np.linspace(start, end, int((end - start) / Tp))
 manipulator = PlanarManipulator2DOF(Tp)
 
-"""
-Switch to FeedbackLinearizationController as soon as you implement it
-"""
-controller = FeedbackLinearizationController(Tp)
-# controller = DummyController(Tp)
-
-"""
-Here you have some trajectory generators. You can use them to check your implementations.
-At the end implement Point2point trajectory generator to move your manipulator to some desired state.
-"""
-# traj_gen = ConstantTorque(np.array([0., 1.0])[:, np.newaxis])
-traj_gen = Sinusoidal(np.array([0., 1.]), np.array([2., 2.]), np.array([0., 0.]))
-# traj_gen = Poly3(np.array([0., 0.]), np.array([pi/4, pi/6]), end)
+kp1 = 0.
+kp2 = 0.
+kd1 = 0.
+kd2 = 0.
+fl_controller = PDDecentralizedController(kp1, kd1)
+sl_controller = PDDecentralizedController(kp2, kd2)
+traj_gen = Poly3(np.array([0., 0.]), np.array([pi/4, pi/6]), end)
 
 
 ctrl = []
@@ -41,7 +36,9 @@ def system(x, t):
     q_d, q_d_dot, q_d_ddot = traj_gen.generate(t)
     Q_d.append(q_d)
     print(q_d_ddot)
-    control = controller.calculate_control(x, q_d_ddot[:, np.newaxis], q_d_dot[:, np.newaxis], q_d[:, np.newaxis])
+    u1 = fl_controller.calculate_control(x[0], x[2], q_d[0], q_d_dot[0], q_d_ddot[0])
+    u2 = sl_controller.calculate_control(x[1], x[3], q_d[1], q_d_dot[1], q_d_ddot[1])
+    control = np.stack([u1, u2])[:, np.newaxis]
     ctrl.append(control)
     x_dot = manipulator.x_dot(x, control)
     return x_dot[:, 0]
