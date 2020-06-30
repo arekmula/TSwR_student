@@ -1,3 +1,4 @@
+
 import matplotlib.pyplot as plt
 import numpy as np
 from numpy import pi
@@ -20,17 +21,18 @@ manipulator = PlanarManipulator2DOF(Tp)
 
 b_est_1 = 10.
 b_est_2 = 10.
-kp_1 = 0.
-kp_2 = 0.
-kd_1 = 0.
-kd_2 = 0.
+kp_1 = 15.
+kp_2 = 15.
+kd_1 = 6.5
+kd_2 = 6.5
 fl_controller = ADRController(b_est_1, kp_1, kd_1)
 sl_controller = ADRController(b_est_2, kp_2, kd_2)
 
-l1 = 0.
-l2 = 0.
-l3 = 0.
-A = np.array([[0., 0., 0.], [0., 0., 0.], [0., 0., 0.]])
+p = 100
+l1 = 3*p
+l2 = 3*p**2
+l3 = p**3
+A = np.array([[0., 1., 0.], [0., 0., 1.], [0., 0., 0.]])
 B1 = np.array([0., b_est_1, 0.])[:, np.newaxis]
 B2 = np.array([0., b_est_2, 0.])[:, np.newaxis]
 L1 = np.array([l1, l2, l3])[:, np.newaxis]
@@ -38,7 +40,7 @@ L2 = np.array([l1, l2, l3])[:, np.newaxis]
 first_link_state_estimator = ESO(A, B1, L1)
 second_link_state_estimator = ESO(A, B2, L2)
 
-traj_gen = Poly3(np.array([0., 0.]), np.array([pi/4, pi/6]), end)
+traj_gen = Poly3(np.array([0., 0.]), np.array([pi/2, pi/2]), end)
 
 
 ctrl = []

@@ -9,6 +9,7 @@ class ESO:
 
     def compute_dot(self, eso_estimates, q, u):
         e = q - eso_estimates[0]
-        ### TODO: Please implement me
-        z_dot = None
+        z_hat = eso_estimates[:, np.newaxis]
+        z_dot = self.A @ z_hat + self.B * u + self.L * e
+
         return z_dot
